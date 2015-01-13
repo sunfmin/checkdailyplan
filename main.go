@@ -49,12 +49,13 @@ func main() {
 	// log.Printf("Got %d Entries\n", len(entries))
 
 	var writtenUsernames []string
-
-	yesterday := time.Now().In(time.FixedZone("Beijing", 8)).Add(-24 * time.Hour).Format("2006-01-02")
-
+	zone, _ := time.LoadLocation("Local")
+	yesterday := time.Now().In(zone).Add(-24 * time.Hour).Format("2006-01-02")
+	log.Println("Yesterday: ", yesterday)
 	for _, entry := range entries {
-		// log.Println(entry.Author.Name, entry.BumpedUpAt, entry.WholeLastUpdateAt)
-		if entry.BumpedUpAt.Format("2006-01-02") >= yesterday || entry.WholeLastUpdateAt.Format("2006-01-02") >= yesterday {
+		// log.Println(entry.Author.Name, entry.BumpedUpAt.In(zone), entry.UpdatedAt.In(zone))
+		if entry.BumpedUpAt.In(zone).Format("2006-01-02") >= yesterday ||
+			entry.UpdatedAt.In(zone).Format("2006-01-02") >= yesterday {
 			writtenUsernames = append(writtenUsernames, entry.Author.Name)
 		}
 	}
